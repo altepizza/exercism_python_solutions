@@ -1,0 +1,10 @@
+__pychache__
+
+*.pyc
+*_test.py
+
+README.md
+
+.exercism
+.pytest_cache
+.vscode
