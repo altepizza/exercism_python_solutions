@@ -1,24 +1,23 @@
 class School:
+
     def __init__(self):
         self.students = {}
+        self.students_sorted = []
 
     def add_student(self, name, grade):
         self.students[name] = grade
+        self.students_sorted = sorted(
+            self.students.items(), key=lambda student_grade:
+                str(student_grade[1]) + student_grade[0]
+        )
 
     def roster(self):
-        grades_to_students = {}
-        roster = []
-        for name, grade in self.students.items():
-            if grade in grades_to_students:
-                grades_to_students[grade].append(name)
-            else:
-                grades_to_students[grade] = [name]
-        for key in sorted(grades_to_students.keys()):
-            roster += sorted(grades_to_students[key])
-        return roster
+        return [student[0] for student in self.students_sorted]
 
     def grade(self, grade_number):
-        return sorted([
-            student for student in self.students.keys()
-            if self.students[student] == grade_number
-        ])
+        return [
+            student[0]
+            for student
+            in self.students_sorted
+            if student[1] == grade_number
+        ]
