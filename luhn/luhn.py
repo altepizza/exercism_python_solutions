@@ -10,12 +10,12 @@ class Luhn:
             except ValueError:
                 return False
             double_me = False
-            for index, num in reversed(list(enumerate(digits))):
+            for index, number in reversed(list(enumerate(digits))):
                 if double_me:
-                    if num * 2 > 9:
-                        digits[index] = num * 2 - 9
+                    if number * 2 > 9:
+                        digits[index] = number * 2 - 9
                     else:
-                        digits[index] = num * 2
+                        digits[index] = number * 2
                     double_me = False
                 else:
                     double_me = True
