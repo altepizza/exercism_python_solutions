@@ -7,36 +7,19 @@ def parse(markdown):
     in_list = False
     in_list_append = False
     for line in lines:
-        if re.match('###### (.*)', line) is not None:
-            line = '<h6>' + line[7:] + '</h6>'
-        elif re.match('## (.*)', line) is not None:
-            line = '<h2>' + line[3:] + '</h2>'
-        elif re.match('# (.*)', line) is not None:
-            line = '<h1>' + line[2:] + '</h1>'
+        line = match_and_create_headline(line)
         emphasis = re.match(r'\* (.*)', line)
         if emphasis:
             if not in_list:
                 in_list = True
                 current_text = emphasis.group(1)
-                bold = match_boldness(current_text)
-                if bold:
-                    current_text = bold.group(1) + '<strong>' + \
-                        bold.group(2) + '</strong>' + bold.group(3)
-                bold = match_italicness(current_text)
-                if bold:
-                    current_text = bold.group(1) + '<em>' + bold.group(2) + \
-                        '</em>' + bold.group(3)
+                current_text = match_boldness(current_text)
+                current_text = match_italicness(current_text)
                 line = '<ul><li>' + current_text + '</li>'
             else:
                 current_text = emphasis.group(1)
-                bold = match_boldness(current_text)
-                if bold:
-                    current_text = bold.group(1) + '<strong>' + \
-                        bold.group(2) + '</strong>' + bold.group(3)
-                bold = match_italicness(current_text)
-                if bold:
-                    current_text = bold.group(1) + '<em>' + bold.group(2) + \
-                        '</em>' + bold.group(3)
+                current_text = match_boldness(current_text)
+                current_text = match_italicness(current_text)
                 line = '<li>' + current_text + '</li>'
         else:
             if in_list:
@@ -46,14 +29,8 @@ def parse(markdown):
         emphasis = re.match('<h|<ul|<p|<li', line)
         if not emphasis:
             line = '<p>' + line + '</p>'
-        emphasis = match_boldness(line)
-        if emphasis:
-            line = emphasis.group(1) + '<strong>' + emphasis.group(2) + \
-                '</strong>' + emphasis.group(3)
-        emphasis = match_italicness(line)
-        if emphasis:
-            line = emphasis.group(1) + '<em>' + \
-                emphasis.group(2) + '</em>' + emphasis.group(3)
+        line = match_boldness(line)
+        line = match_italicness(line)
         if in_list_append:
             line = '</ul>' + line
             in_list_append = False
@@ -64,8 +41,24 @@ def parse(markdown):
 
 
 def match_boldness(text):
-    return re.match('(.*)__(.*)__(.*)', text)
+    match = re.match('(.*)__(.*)__(.*)', text)
+    if match:
+        return match.group(1) + '<strong>' + match.group(2) + '</strong>' + match.group(3)
+    return text
 
 
 def match_italicness(text):
-    return re.match('(.*)_(.*)_(.*)', text)
+    match = re.match('(.*)_(.*)_(.*)', text)
+    if match:
+        return match.group(1) + '<em>' + match.group(2) + '</em>' + match.group(3)
+    return text
+
+
+def match_and_create_headline(line):
+    if re.match('###### (.*)', line):
+        line = '<h6>' + line[7:] + '</h6>'
+    elif re.match('## (.*)', line):
+        line = '<h2>' + line[3:] + '</h2>'
+    elif re.match('# (.*)', line):
+        line = '<h1>' + line[2:] + '</h1>'
+    return line
