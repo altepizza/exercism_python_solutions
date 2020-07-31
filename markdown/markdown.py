@@ -17,34 +17,24 @@ def parse(markdown):
         if emphasis:
             if not in_list:
                 in_list = True
-                is_bold = False
-                is_italic = False
                 current_text = emphasis.group(1)
                 bold = match_boldness(current_text)
                 if bold:
                     current_text = bold.group(1) + '<strong>' + \
                         bold.group(2) + '</strong>' + bold.group(3)
-                    is_bold = True
                 bold = match_italicness(current_text)
                 if bold:
                     current_text = bold.group(1) + '<em>' + bold.group(2) + \
                         '</em>' + bold.group(3)
-                    is_italic = True
                 line = '<ul><li>' + current_text + '</li>'
             else:
-                is_bold = False
-                is_italic = False
                 current_text = emphasis.group(1)
                 bold = match_boldness(current_text)
                 if bold:
-                    is_bold = True
-                bold = match_italicness(current_text)
-                if bold:
-                    is_italic = True
-                if is_bold:
                     current_text = bold.group(1) + '<strong>' + \
                         bold.group(2) + '</strong>' + bold.group(3)
-                if is_italic:
+                bold = match_italicness(current_text)
+                if bold:
                     current_text = bold.group(1) + '<em>' + bold.group(2) + \
                         '</em>' + bold.group(3)
                 line = '<li>' + current_text + '</li>'
