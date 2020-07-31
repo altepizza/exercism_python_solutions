@@ -20,12 +20,12 @@ def parse(markdown):
                 is_bold = False
                 is_italic = False
                 current_text = emphasis.group(1)
-                bold = re.match('(.*)__(.*)__(.*)', current_text)
+                bold = match_boldness(current_text)
                 if bold:
                     current_text = bold.group(1) + '<strong>' + \
                         bold.group(2) + '</strong>' + bold.group(3)
                     is_bold = True
-                bold = re.match('(.*)_(.*)_(.*)', current_text)
+                bold = match_italicness(current_text)
                 if bold:
                     current_text = bold.group(1) + '<em>' + bold.group(2) + \
                         '</em>' + bold.group(3)
@@ -35,10 +35,10 @@ def parse(markdown):
                 is_bold = False
                 is_italic = False
                 current_text = emphasis.group(1)
-                bold = re.match('(.*)__(.*)__(.*)', current_text)
+                bold = match_boldness(current_text)
                 if bold:
                     is_bold = True
-                bold = re.match('(.*)_(.*)_(.*)', current_text)
+                bold = match_italicness(current_text)
                 if bold:
                     is_italic = True
                 if is_bold:
@@ -56,11 +56,11 @@ def parse(markdown):
         emphasis = re.match('<h|<ul|<p|<li', line)
         if not emphasis:
             line = '<p>' + line + '</p>'
-        emphasis = re.match('(.*)__(.*)__(.*)', line)
+        emphasis = match_boldness(line)
         if emphasis:
             line = emphasis.group(1) + '<strong>' + emphasis.group(2) + \
                 '</strong>' + emphasis.group(3)
-        emphasis = re.match('(.*)_(.*)_(.*)', line)
+        emphasis = match_italicness(line)
         if emphasis:
             line = emphasis.group(1) + '<em>' + \
                 emphasis.group(2) + '</em>' + emphasis.group(3)
@@ -74,4 +74,8 @@ def parse(markdown):
 
 
 def match_boldness(text):
-    return re.match('(.*)__(.*)__(.*)', current_text)
+    return re.match('(.*)__(.*)__(.*)', text)
+
+
+def match_italicness(text):
+    return re.match('(.*)_(.*)_(.*)', text)
