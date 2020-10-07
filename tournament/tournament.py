@@ -1,56 +1,70 @@
 
+class Team:
+    def __init__(self, name):
+        self.name = name
+        self.wins = 0
+        self.losses = 0
+        self.draws = 0
+        self.points = 0
+        self.matches = 0
 
-def create_rows(teams):
-    table = ['Team                           | MP |  W |  D |  L |  P']
-    for team in teams:
-        name = list(team.keys())[0]
-        scores = team[name]
-        row = ''
-        row = name + (31 - len(name)) * ' '
-        row += '|  {0} |  {1} |  {2} |  {3} |  {4}'.format(
-            scores['MP'], scores['W'], scores['D'], scores['L'], scores['P'])
-        table.append(row)
-    return table
+    def __str__(self):
+        scores = self.name + (31 - len(self.name)) * ' '
+        return scores + '|  {0} |  {1} |  {2} |  {3} |  {4}'.format(
+            self.matches, self.wins, self.draws, self.losses, self.points)
 
+    def __lt__(self, other):
+        if self.points == other.points:
+            return self.name < other.name
+        return self.points > other.points
 
-def create_team(teams, team):
-    if team not in teams:
-        teams[team] = {'MP': 1}
-        teams[team]['W'] = 0
-        teams[team]['D'] = 0
-        teams[team]['L'] = 0
-        teams[team]['P'] = 0
-        teams[team]['name'] = team
-    else:
-        teams[team]['MP'] += 1
+    def win(self):
+        self.wins += 1
+        self.matches += 1
+        self.points += 3
 
+    def draw(self):
+        self.draws += 1
+        self.matches += 1
+        self.points += 1
 
-def count(teams, team_one, team_two, outcome):
-    if outcome == 'draw':
-        for team in [team_one, team_two]:
-            teams[team]['D'] += 1
-            teams[team]['P'] += 1
-        return None
-    elif outcome == 'loss':
-        teams[team_one]['L'] += 1
-        teams[team_two]['P'] += 3
-        teams[team_two]['W'] += 1
-    else:
-        teams[team_one]['W'] += 1
-        teams[team_one]['P'] += 3
-        teams[team_two]['L'] += 1
+    def lose(self):
+        self.losses += 1
+        self.matches += 1
 
 
 def tally(rows):
-    teams = {}
-    for row in rows:
-        split = row.split(';')
+    teams = []
+    for game_result in rows:
+        _register_game(teams, game_result)
+    teams.sort()
+    return _create_scorecard(teams)
 
-        create_team(teams, split[0])
-        create_team(teams, split[1])
 
-        count(teams, split[0], split[1], split[2])
-    sorted_teams = sorted(teams, key=lambda x: (
-        teams[x]['P']), reverse=True)
-    teams = [{key: teams[key]} for key in sorted_teams]
-    return create_rows(teams)
+def _create_scorecard(teams):
+    table = ['Team                           | MP |  W |  D |  L |  P']
+    for team in teams:
+        table.append(str(team))
+    return table
+
+
+def _find_or_create_team(teams, team_name):
+    found_team = next((x for x in teams if x.name == team_name), None)
+    if found_team:
+        return found_team
+    found_team = Team(team_name)
+    teams.append(found_team)
+    return found_team
+
+
+def _register_game(teams, game_result):
+    team_one, team_two, outcome = game_result.split(';')
+    if outcome == 'draw':
+        _find_or_create_team(teams, team_one).draw()
+        _find_or_create_team(teams, team_two).draw()
+    elif outcome == 'loss':
+        _find_or_create_team(teams, team_one).lose()
+        _find_or_create_team(teams, team_two).win()
+    elif outcome == 'win':
+        _find_or_create_team(teams, team_one).win()
+        _find_or_create_team(teams, team_two).lose()
