@@ -43,8 +43,9 @@ def tally(rows):
 
 def _create_scorecard(teams):
     table = ['Team                           | MP |  W |  D |  L |  P']
-    for team in teams:
-        table.append(str(team))
+
+    [table.append(str(team)) for team in teams]
+
     return table
 
 

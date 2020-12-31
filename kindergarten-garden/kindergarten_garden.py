@@ -4,7 +4,7 @@ class Garden:
         'Ginny', 'Harriet', 'Ileana', 'Joseph', 'Kincaid', 'Larry'
     ]
     CHAR_TO_PLANT = {
-        'V': 'Violets', 'R': 'Radishes', 'G': 'Grass', 'C': 'Clover'
+        'V': 'Violets', 'R': 'Radishes', 'G': 'Grass', 'C':'Clover'
     }
 
     def __init__(self, diagram, students=None):
