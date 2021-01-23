@@ -29,7 +29,7 @@ def backtrack_all_prices(basket, current_price=0):
                 backtrack_all_prices(tmp_basket,
                                      current_price + SET_PRICES[set_size])
     else:
-        all_prices.append((current_price))
+        all_prices.append(current_price)
 
 
 def total(basket):
