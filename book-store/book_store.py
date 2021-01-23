@@ -1,5 +1,4 @@
 from collections import Counter
-from copy import copy
 
 
 BOOK_PRICE = 800
@@ -21,19 +20,16 @@ def reduce_basket(basket, no_to_be_removed):
 
 
 def backtrack_all_prices(basket, current_price=0):
-    len_unique_books = len(set(basket))
     if basket:
         for set_size in SET_PRICES:
-            if len_unique_books >= set_size:
-                tmp_basket = reduce_basket(copy(basket), set_size)
-                backtrack_all_prices(tmp_basket,
-                                     current_price + SET_PRICES[set_size])
+            tmp_basket = reduce_basket(sorted(basket), set_size)
+            backtrack_all_prices(tmp_basket,
+                                 current_price + SET_PRICES[set_size])
     else:
         all_prices.append(current_price)
 
 
 def total(basket):
     all_prices.clear()
-    basket = sorted(basket)
     backtrack_all_prices(basket)
     return min(all_prices)
