@@ -9,7 +9,6 @@ SET_PRICES = {
     4: BOOK_PRICE * 0.8 * 4,
     5: BOOK_PRICE * 0.75 * 5
 }
-all_prices = []
 
 
 def reduce_basket(basket, no_to_be_removed):
@@ -19,17 +18,14 @@ def reduce_basket(basket, no_to_be_removed):
     return basket
 
 
-def backtrack_all_prices(basket, current_price=0):
-    if basket:
-        for set_size in SET_PRICES:
-            tmp_basket = reduce_basket(sorted(basket), set_size)
-            backtrack_all_prices(tmp_basket,
-                                 current_price + SET_PRICES[set_size])
-    else:
-        all_prices.append(current_price)
+def backtrack_all_prices(basket):
+    current_price = BOOK_PRICE * len(basket)
+    for piece in range(len(set(basket)), 0, -1):
+        tmp_basket = reduce_basket(basket.copy(), piece)
+        current_price = min([backtrack_all_prices(
+            tmp_basket) + SET_PRICES[piece], current_price])
+    return current_price
 
 
 def total(basket):
-    all_prices.clear()
-    backtrack_all_prices(basket)
-    return min(all_prices)
+    return backtrack_all_prices(basket)
