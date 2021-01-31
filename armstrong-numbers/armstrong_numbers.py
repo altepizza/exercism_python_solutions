@@ -1,7 +1,5 @@
 def is_armstrong_number(number):
-    numberparts = list(str(number))
-    POWER = len(numberparts)
-    result = 0
-    for number in numberparts:
-        result += int(number) ** POWER
-    return number == result
+    str_number = str(number)
+    power = len(str_number)
+    sum_of_powers = sum([int(no)**power for no in str_number])
+    return sum_of_powers == number
