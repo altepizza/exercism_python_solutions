@@ -57,6 +57,9 @@ class RestAPI:
             borrower = self._update_owes(borrower, lender, amount)
             lender = self._update_owed_by(lender, borrower, amount)
 
+        self._save_user(lender)
+        self._save_user(borrower)
+
         sorted_output = sorted([lender, borrower], key=lambda k: k['name'])
         return {'users': sorted_output}
 
@@ -90,6 +93,14 @@ class RestAPI:
         for user in self.database['users']:
             if user['name'] == name:
                 return user
+
+    def _save_user(self, user):
+        new_users_list = [
+            entry for entry in self.database['users']
+            if entry['name'] != user['name']
+        ]
+        new_users_list.append(user)
+        self.database['users'] = new_users_list
 
     def _update_balance(self, user, amount):
         user['balance'] = user['balance'] + amount
