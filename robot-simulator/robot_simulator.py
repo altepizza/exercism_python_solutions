@@ -1,10 +1,10 @@
 import operator
 from collections import deque
 
-EAST = 'EAST'
-NORTH = 'NORTH'
-WEST = 'WEST'
-SOUTH = 'SOUTH'
+EAST = (1, 0)
+NORTH = (0, 1)
+WEST = (-1, 0)
+SOUTH = (0, -1)
 
 
 class Robot:
@@ -15,24 +15,18 @@ class Robot:
         self.direction = self.compass[0]
         self.coordinates = (x, y)
 
+    def _turn(self, cmd):
+        turn_to_value = {'L': 1, 'R': -1}
+        self.compass.rotate(turn_to_value[cmd])
+        self.direction = self.compass[0]
+
+    def _walk(self):
+        self.coordinates = tuple(
+            map(operator.add, self.coordinates, self.compass[0]))
+
     def move(self, commands=''):
         for cmd in commands:
-            if cmd is 'L':
-                self.compass.rotate(1)
-                self.direction = self.compass[0]
-            if cmd is 'R':
-                self.compass.rotate(-1)
-                self.direction = self.compass[0]
-            if cmd is 'A':
-                if self.direction is EAST:
-                    self.coordinates = tuple(
-                        map(operator.add, self.coordinates, (1, 0)))
-                if self.direction is NORTH:
-                    self.coordinates = tuple(
-                        map(operator.add, self.coordinates, (0, 1)))
-                if self.direction is SOUTH:
-                    self.coordinates = tuple(
-                        map(operator.add, self.coordinates, (0, -1)))
-                if self.direction is WEST:
-                    self.coordinates = tuple(
-                        map(operator.add, self.coordinates, (-1, 0)))
+            if cmd in 'LR':
+                self._turn(cmd)
+            elif cmd is 'A':
+                self._walk()
