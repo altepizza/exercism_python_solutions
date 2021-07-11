@@ -9,9 +9,7 @@ def primes(limit):
     candidates = [True for i in range(limit+1)]
     primes = []
     for value, possible_prime in enumerate(candidates):
-        if value < 2:
-            continue
-        elif possible_prime:
+        if (value >= 2 and possible_prime):
             primes.append(value)
             candidates = _mark_no_primes(value, candidates)
     return primes
