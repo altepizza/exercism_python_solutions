@@ -1,3 +1,10 @@
+def _mark_no_primes(prime, candidates):
+    for candidate in range(prime + 1, len(candidates)):
+        if candidate % prime == 0:
+            candidates[candidate] = False
+    return candidates
+
+
 def primes(limit):
     candidates = [True for i in range(limit+1)]
     primes = []
@@ -6,7 +13,5 @@ def primes(limit):
             continue
         elif possible_prime:
             primes.append(value)
-            for i in range(value, len(candidates)):
-                if i % value == 0:
-                    candidates[i] = False
+            candidates = _mark_no_primes(value, candidates)
     return primes
